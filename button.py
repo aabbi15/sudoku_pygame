@@ -1,0 +1,57 @@
+import pygame
+
+
+class Button():
+
+    def __init__(self,image,x,y,scale):
+        width=image.get_width()
+        height=image.get_height()
+        #self.img = pygame.image.load(path)
+        self.image= pygame.transform.scale(image,(int(width*scale),int(height*scale)))
+        self.rect= self.image.get_rect()
+        self.rect.topleft=(x,y)
+        self.clicked=False
+
+
+    def draw(self,surface):
+        
+        
+
+
+        surface.blit(self.image,(self.rect.x,self.rect.y))
+
+        
+
+    def isclicked(self, event):
+        mouse_pos = pygame.mouse.get_pos()
+
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            if self.rect.collidepoint(mouse_pos):
+                return True
+
+        return False
+
+
+    # def isclicked(self,event):
+    #     action = False
+    #     mouse_pos=pygame.mouse.get_pos()
+
+    #     if event.type==pygame.MOUSEBUTTONDOWN:
+    #         if self.rect.collidepoint(mouse_pos)==True:
+    #             if pygame.mouse.get_pressed()[0]==True:
+    #                 self.clicked=True
+                    
+
+    #     return self.clicked
+        
+        # if self.rect.collidepoint(mouse_pos):
+        #     if pygame.mouse.get_pressed()[0]==1 and self.clicked == False:
+        #         self.clicked=True
+        #         action =True 
+            
+        #     if pygame.mouse.get_pressed()[0]==0:
+        #         self.clicked=False
+
+            
+        
+
