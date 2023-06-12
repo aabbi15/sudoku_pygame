@@ -1,8 +1,11 @@
 import pygame
-pygame.init()
+
 import newbutton
 import sys
 import random
+import sudokumaker
+
+pygame.init()
 
 #sudoku boardis 700x700 
 # each big box is 233x233
@@ -18,6 +21,19 @@ boardscreen = pygame.Surface([700,700], pygame.SRCALPHA, 32)
 boardscreen = boardscreen.convert_alpha()
 pygame.display.set_caption("SUDOKU")
 screen.fill("cyan")
+
+#logics
+run=True
+logics={"showhome":True,"showmenu":False,"showgame":False,"xyz":True}
+difficulty="hard"
+
+
+#sudokumaker
+
+finalgrid=sudokumaker.generatepuzzle(difficulty)
+
+
+
 
 
 #fonts
@@ -37,14 +53,13 @@ six_img = pygame.image.load("six.png").convert_alpha()
 seven_img = pygame.image.load("seven.png").convert_alpha()
 eight_img = pygame.image.load("eight.png").convert_alpha()
 nine_img = pygame.image.load("nine.png").convert_alpha()
+blank_img = pygame.image.load("blank.png").convert_alpha()
 
-numbers_img=[one_img,two_img,three_img,four_img,five_img,six_img,seven_img,eight_img,nine_img]
+numbers_img=[blank_img,one_img,two_img,three_img,four_img,five_img,six_img,seven_img,eight_img,nine_img]
 
 
 
-#logics
-run=True
-logics={"showhome":True,"showmenu":False,"showgame":False,"xyz":True}
+
 
 
 #fxns
@@ -60,12 +75,6 @@ def newgamepressed():
       logics[key]=False
    logics["showgame"]=True
 
-def board_filler():
-   for i in range(9):
-      for j in range(9):
-         key=random.randint(0,8)
-         print(key)
-         boardscreen.blit(numbers_img[key],(78*i,78*j))
    
       
 
@@ -94,13 +103,18 @@ def homescreen():
 def gamescreen():
    screen.fill("black")
    screen.blit(board_img,(0,0))
-   #screen.blit(one_img,(78,0))
+
    
+   #screen.blit(one_img,(78,0))
+   l=0
    for i in range(9):
       for j in range(9):
-         key=random.randint(0,8)
-         print(key)
+         key=finalgrid[i][j]
+         
+         
          screen.blit(numbers_img[key],(78*i,78*j))
+
+   
    
    
 

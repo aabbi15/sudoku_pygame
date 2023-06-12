@@ -1,3 +1,6 @@
-def title(text,font,col,x,y):
-   img = font.render(text,True,col)
-   screen.blit(img,(x,y))
+while remove:
+    #     row=random.randint(0,8)
+    #     col=random.randint(0,8)
+    #     if grid[row][col]!=0:
+    #         grid[row][col]=0
+    #         remove-=1
