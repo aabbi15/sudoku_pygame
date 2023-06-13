@@ -23,6 +23,7 @@ class DragnDrop:
 
         self.image = image
         self.rect = self.image.get_rect()
+        self.rect.topleft = (x,y)
         self.moving = False
         # self.rect = pygame.Rect(x, y, self.width, self.height)
         # all_draggers.append(self)

@@ -63,11 +63,11 @@ bar_img = pygame.image.load("emptybar.jpg")
 
 
 #draggers
-# dragger = [0]*10
-# for i in range(1,10):
-#    dragger[i] = dragndrop.DragnDrop(screen,numbers_img[i],(78*(i-1)),722)
+dragger = [0]*10
+for i in range(1,10):
+   dragger[i] = dragndrop.DragnDrop(screen,numbers_img[i],(78*(i-1)),722)
 
-onedrag = dragndrop.DragnDrop(screen,one_img,0,722)
+
 
 
 
@@ -121,32 +121,23 @@ def gamescreen():
    screen.fill("black")
    screen.blit(board_img,(0,0))
    screen.blit(bar_img,(0,722))
-   screen.blit(one_img, onedrag.rect)
+   for m in range(1,10):
+      screen.blit(numbers_img[m], dragger[m].rect)
 
    
+   for i in range(9):
+      for j in range(9):
+         key=finalgrid[i][j]
+         screen.blit(numbers_img[key],(78*i,78*j))
 
 
-   # for i in range(9):
-   #    for j in range(9):
-   #       key=finalgrid[i][j]
-   #       screen.blit(numbers_img[key],(78*i,78*j))
+   i=0
+   for num in numbers_img:
+      if num!=blank_img:
+         screen.blit(num,((78*i),722))
+         i+=1
 
 
-   # i=0
-   # for num in numbers_img:
-   #    if num!=blank_img:
-   #       screen.blit(num,((78*i),722))
-   #       i+=1
-
-
-   # for i in range(1,10):
-   #    dragger[i].main()
-
-   
-   # for i in range(1, 10):
-   #      dragger[i].main()
-
-   # pygame.display.update()
    
 
    
@@ -182,16 +173,20 @@ while run==True:
       for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if onedrag.rect.collidepoint(event.pos):
-                    onedrag.dragging = True
-            elif event.type == pygame.MOUSEBUTTONUP:
-                onedrag.dragging = False
-            elif event.type == pygame.MOUSEMOTION:
-                if onedrag.dragging:
-                    onedrag.rect.move_ip(event.rel)
-                    gamescreen()
-                    pygame.display.update()
+            for i in range(1,10):
+               if event.type == pygame.MOUSEBUTTONDOWN:
+                  
+                  if dragger[i].rect.collidepoint(event.pos):
+                     dragger[i].dragging = True
+
+               elif event.type == pygame.MOUSEBUTTONUP:
+                  dragger[i].dragging = False
+
+               elif event.type == pygame.MOUSEMOTION:
+                  if dragger[i].dragging:
+                     dragger[i].rect.move_ip(event.rel)
+                     gamescreen()
+                     pygame.display.update()
       
 
 
