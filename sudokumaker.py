@@ -59,12 +59,12 @@ def generatepuzzle(difficulty):
         remove=random.randint(61,66)
     
     
-    while remove:
-        row=random.randint(0,8)
-        col=random.randint(0,8)
-        if grid[row][col]!=0:
-            grid[row][col]=0
-            remove-=1
+    # while remove:
+        # row=random.randint(0,8)
+        # col=random.randint(0,8)
+        # if grid[row][col]!=0:
+        #     grid[row][col]=0
+        #     remove-=1
     return grid
 
 # generatepuzzle("easy")

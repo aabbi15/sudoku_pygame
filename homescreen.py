@@ -4,6 +4,7 @@ import newbutton
 import sys
 import random
 import sudokumaker
+import dragndrop
 
 pygame.init()
 
@@ -17,7 +18,7 @@ h=800
 
 #basics
 screen = pygame.display.set_mode((w,h))
-boardscreen = pygame.Surface([700,700], pygame.SRCALPHA, 32)
+boardscreen = pygame.Surface([700,700])
 boardscreen = boardscreen.convert_alpha()
 pygame.display.set_caption("SUDOKU")
 screen.fill("cyan")
@@ -26,6 +27,7 @@ screen.fill("cyan")
 run=True
 logics={"showhome":True,"showmenu":False,"showgame":False,"xyz":True}
 difficulty="hard"
+visible=False
 
 
 #sudokumaker
@@ -56,6 +58,18 @@ nine_img = pygame.image.load("nine.png").convert_alpha()
 blank_img = pygame.image.load("blank.png").convert_alpha()
 
 numbers_img=[blank_img,one_img,two_img,three_img,four_img,five_img,six_img,seven_img,eight_img,nine_img]
+
+bar_img = pygame.image.load("emptybar.jpg")
+
+
+#draggers
+# dragger = [0]*10
+# for i in range(1,10):
+#    dragger[i] = dragndrop.DragnDrop(screen,numbers_img[i],(78*(i-1)),722)
+
+onedrag = dragndrop.DragnDrop(screen,one_img,0,722)
+
+
 
 
 
@@ -99,20 +113,46 @@ def homescreen():
    title("Made by Abhishek",myfont,"red",500,410)
 
    title("PRESS SPACE TO CONTINUE",titlefont,"red",100,700)
+   
 
 def gamescreen():
+   
+
    screen.fill("black")
    screen.blit(board_img,(0,0))
+   screen.blit(bar_img,(0,722))
+   screen.blit(one_img, onedrag.rect)
 
    
-   #screen.blit(one_img,(78,0))
-   l=0
-   for i in range(9):
-      for j in range(9):
-         key=finalgrid[i][j]
-         
-         
-         screen.blit(numbers_img[key],(78*i,78*j))
+
+
+   # for i in range(9):
+   #    for j in range(9):
+   #       key=finalgrid[i][j]
+   #       screen.blit(numbers_img[key],(78*i,78*j))
+
+
+   # i=0
+   # for num in numbers_img:
+   #    if num!=blank_img:
+   #       screen.blit(num,((78*i),722))
+   #       i+=1
+
+
+   # for i in range(1,10):
+   #    dragger[i].main()
+
+   
+   # for i in range(1, 10):
+   #      dragger[i].main()
+
+   # pygame.display.update()
+   
+
+   
+   
+   
+   
 
    
    
@@ -137,8 +177,22 @@ while run==True:
       homescreen()
    if logics["showmenu"]==True:
       menuscreen()
-   if logics["showgame"]==True:
+   if logics["showgame"]==True:  
       gamescreen()
+      for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if onedrag.rect.collidepoint(event.pos):
+                    onedrag.dragging = True
+            elif event.type == pygame.MOUSEBUTTONUP:
+                onedrag.dragging = False
+            elif event.type == pygame.MOUSEMOTION:
+                if onedrag.dragging:
+                    onedrag.rect.move_ip(event.rel)
+                    gamescreen()
+                    pygame.display.update()
+      
 
 
 
@@ -151,9 +205,9 @@ while run==True:
             for key in logics:
                logics[key] = False
                logics["showmenu"]=True
+      
             
             
-   
    
    
    pygame.display.update()
