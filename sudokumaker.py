@@ -1,5 +1,6 @@
 import pygame
 import random
+import dragndrop
 
 
 grid= [[0] * 9  for _ in range(9)]
@@ -48,6 +49,7 @@ def solver(grid):
 
 
 
+
 def generatepuzzle(difficulty):
 
     solver(grid)
@@ -60,14 +62,40 @@ def generatepuzzle(difficulty):
     
     
     while remove:
+        
         row=random.randint(0,8)
         col=random.randint(0,8)
-        if grid[row][col]!=0:
-            grid[row][col]=0
+        store=grid[row][col]
+        grid[row][col]=0
+        if single_ans_checker(grid):
             remove-=1
+        else:
+            grid[row][col]=store
     return grid
 
+
+def single_ans_checker(grid):
+    tempgrid = grid
+    for i in range(0,8):
+        for j in range(0,8):
+            if tempgrid[i][j]==0:
+                counter=0
+                for num in range(1,9):
+                    if isvalid(grid,i,j,num): 
+                        tempans=num
+                        counter+=1
+                if counter>1:
+                    return False
+                else:
+                    counter=tempans
+    return True
+                        
+
+# def solution_checker(grid):
+
 # generatepuzzle("easy")
+
+
 # for i in range(9):
 #     for j in range(9):
 #         print(grid[i][j],end="")

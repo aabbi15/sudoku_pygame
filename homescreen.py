@@ -26,7 +26,7 @@ screen.fill("cyan")
 #logics
 run=True
 logics={"showhome":True,"showmenu":False,"showgame":False,"xyz":True}
-difficulty="hard"
+difficulty="easy"
 visible=False
 
 
@@ -117,25 +117,34 @@ def homescreen():
 
 def gamescreen():
    
-
+   #layout
    screen.fill("black")
    screen.blit(board_img,(0,0))
    screen.blit(bar_img,(0,722))
-   for m in range(1,10):
-      screen.blit(numbers_img[m], dragger[m].rect)
+  
 
-   
+   #question
    for i in range(9):
       for j in range(9):
          key=finalgrid[i][j]
          screen.blit(numbers_img[key],(78*i,78*j))
 
+      
 
+   #bar
    i=0
    for num in numbers_img:
       if num!=blank_img:
          screen.blit(num,((78*i),722))
          i+=1
+
+   for m in range(1,10):
+      screen.blit(numbers_img[m], dragger[m].rect)
+
+   blankpos=True
+   for k in range(1,10):
+      if dragger[m].rect.collidepoint(blank_img):
+         screen.blit(dragger[m].image, blank_img)
 
 
    
@@ -180,12 +189,14 @@ while run==True:
                      dragger[i].dragging = True
 
                elif event.type == pygame.MOUSEBUTTONUP:
+                  
                   dragger[i].dragging = False
+                  dragger[i].return_home()
 
                elif event.type == pygame.MOUSEMOTION:
                   if dragger[i].dragging:
                      dragger[i].rect.move_ip(event.rel)
-                     gamescreen()
+                     
                      pygame.display.update()
       
 
