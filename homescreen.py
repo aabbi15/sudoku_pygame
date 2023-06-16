@@ -34,6 +34,26 @@ visible=False
 
 finalgrid=sudokumaker.generatepuzzle(difficulty)
 
+empty_coordinates = []
+empty_rect =[]
+filled_rect=[]
+
+for i in range(9):
+   for j in range(9):
+      if finalgrid[i][j]==0:
+         empty_coordinates.append(((78*i),(j*78)))
+wow=0
+for x,y in empty_coordinates:
+   empty_rect.append(pygame.Rect(x,y,78,78))
+   wow+=1
+
+
+
+
+
+
+  
+
 
 
 
@@ -55,7 +75,11 @@ six_img = pygame.image.load("six.png").convert_alpha()
 seven_img = pygame.image.load("seven.png").convert_alpha()
 eight_img = pygame.image.load("eight.png").convert_alpha()
 nine_img = pygame.image.load("nine.png").convert_alpha()
+redbox_img = pygame.image.load("redbox.png").convert_alpha()
+# greenbox_img = pygame.image.load("greenbox.png").convert_alpha()
 blank_img = pygame.image.load("blank.png").convert_alpha()
+redbox_img= pygame.transform.scale(redbox_img,(75,75))
+
 
 numbers_img=[blank_img,one_img,two_img,three_img,four_img,five_img,six_img,seven_img,eight_img,nine_img]
 
@@ -89,7 +113,20 @@ def newgamepressed():
       logics[key]=False
    logics["showgame"]=True
 
+def newbox_printer():
    
+   if red:
+      screen.blit(redbox_img,(x,y))
+   for a,b in filled_rect:
+      screen.blit(numbers_img[a],b)
+   
+
+
+#def correctornot(num):
+
+
+
+
       
 
 
@@ -141,10 +178,9 @@ def gamescreen():
    for m in range(1,10):
       screen.blit(numbers_img[m], dragger[m].rect)
 
-   blankpos=True
-   for k in range(1,10):
-      if dragger[m].rect.collidepoint(blank_img):
-         screen.blit(dragger[m].image, blank_img)
+
+   
+   
 
 
    
@@ -169,7 +205,10 @@ settings_butt= newbutton.Button(screen,510,380,["red","blue","green"],200 ,50,my
 exit_butt= newbutton.Button(screen,510,480,["red","blue","green"],200 ,50,myfunction,"Exit")
 
 
-
+null=(0,0)
+boxprint=0
+green=False
+red = False
 
 while run==True:
 
@@ -179,25 +218,49 @@ while run==True:
       menuscreen()
    if logics["showgame"]==True:  
       gamescreen()
+
+      newbox_printer()
+              
       for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+           
+
             for i in range(1,10):
                if event.type == pygame.MOUSEBUTTONDOWN:
                   
                   if dragger[i].rect.collidepoint(event.pos):
                      dragger[i].dragging = True
 
-               elif event.type == pygame.MOUSEBUTTONUP:
+               elif event.type == pygame.MOUSEBUTTONUP :
+                  mousepos=pygame.mouse.get_pos()
+                  if dragger[i].dragging:
+                     dragger[i].dragging = False
+                     dragger[i].return_home()
+                     for newrect in empty_rect:
+                        if  newrect.collidepoint(mousepos):
+                           boxprint=i
+                           x= newrect.left
+                           y= newrect.top
+                           if sudokumaker.isvalid(finalgrid,x//78,y//78,i):
+                              
+                              red = False
+                              empty_rect.remove(newrect)
+                              filled_rect.append((boxprint,newrect))
+                              finalgrid[(x//78)][(y//78)]=i
+                           else:
+                              red = True
+                              
+
+                        
                   
-                  dragger[i].dragging = False
-                  dragger[i].return_home()
 
                elif event.type == pygame.MOUSEMOTION:
                   if dragger[i].dragging:
                      dragger[i].rect.move_ip(event.rel)
-                     
-                     pygame.display.update()
+            
+           
+            pygame.display.update()
       
 
 

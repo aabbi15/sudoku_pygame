@@ -75,23 +75,22 @@ def generatepuzzle(difficulty):
 
 
 def single_ans_checker(grid):
-    tempgrid = grid
-    for i in range(0,8):
-        for j in range(0,8):
+    tempgrid = grid.copy()
+    for i in range(0,9):
+        for j in range(0,9):
             if tempgrid[i][j]==0:
                 counter=0
-                for num in range(1,9):
+                for num in range(1,10):
                     if isvalid(grid,i,j,num): 
                         tempans=num
                         counter+=1
                 if counter>1:
                     return False
-                else:
-                    counter=tempans
+                
     return True
                         
 
-# def solution_checker(grid):
+
 
 # generatepuzzle("easy")
 

@@ -32,23 +32,34 @@ class DragnDrop:
         self.rect.topleft = (self.x,self.y)
         self.screen.blit(self.image, self.rect)
 
-    def handle_events(self):
+    # def handle_events(self):
+    #     for event in pygame.event.get():
+    #         if event.type == QUIT:
+    #             self.running = False
+
+    #         elif event.type == MOUSEBUTTONDOWN:
+    #             if self.rect.collidepoint(event.pos):
+    #                 self.moving = True
+
+    #         elif event.type == MOUSEBUTTONUP:
+    #             self.moving = False
+    #             self.return_home()
+
+    #         elif event.type == MOUSEMOTION and self.moving:
+    #             self.rect.move_ip(event.rel)
+
+    def dropped(self,empty_coordinates,run):
         for event in pygame.event.get():
-            if event.type == QUIT:
-                self.running = False
+            if event.type ==QUIT:
+                run=False
+            
+            elif self.dragging==False:
+                for null in empty_coordinates:
+                    if self.rect.collidepoint(null):
+                        self.screen.blit(self.image, null)
 
-            elif event.type == MOUSEBUTTONDOWN:
-                if self.rect.collidepoint(event.pos):
-                    self.moving = True
 
-            elif event.type == MOUSEBUTTONUP:
-                self.moving = False
-                self.return_home()
-
-            elif event.type == MOUSEMOTION and self.moving:
-                self.rect.move_ip(event.rel)
-
-        # pygame.display.update()
+                
 
 
     
