@@ -6,6 +6,7 @@ import sys
 import random
 import sudokumaker
 import dragndrop
+import gamelogic
 
 pygame.init()
 
@@ -27,11 +28,17 @@ screen.fill("cyan")
 #logics
 run=True
 logics={"showhome":True,"showmenu":False,"showgame":False,"showlevel":False}
+showgameover = False
+showsucess=False
 difficulty="hard"
+
+global current_tries 
+current_tries=3
 
 
 clock = pygame.time.Clock()
 timer_value=0
+global timer_started
 timer_started=False
 
 
@@ -117,7 +124,7 @@ def newgamepressed():
    logics["showgame"]=False
    logics["showmenu"]=False
    logics["showlevel"]=True
-   pygame.time.delay(100)
+   pygame.time.delay(500)
 
 def newbox_printer():
    
@@ -128,19 +135,22 @@ def newbox_printer():
 
 def draw_timer(time):
    timer_text = myfont.render("TIME: " + str(time),True,"white")
-   screen.blit(timer_text,(800,20))
+   screen.blit(timer_text,(800,10))
 
 def easypress():
+   global difficulty
    difficulty="easy"
    logics["showlevel"]=False
    logics["showgame"]=True
    
 def mediumpress():
+   global difficulty
    difficulty="medium"
    logics["showlevel"]=False
    logics["showgame"]=True
    
 def hardpress():
+   global difficulty
    difficulty="hard"
    logics["showlevel"]=False
    logics["showgame"]=True
@@ -150,6 +160,10 @@ def godmodepress():
    logics["showlevel"]=False
    difficulty="hard"
 
+def backtomenupressed():
+   for l in logics:
+      logics[l]=False
+   logics["showmenu"]=True
 
 #def correctornot(num):
 
@@ -188,6 +202,9 @@ def gamescreen():
    screen.fill("black")
    screen.blit(board_img,(0,0))
    screen.blit(bar_img,(0,722))
+   title(difficulty,myfont,"white",700,0)
+   menu_button.process()
+   
   
 
    #question
@@ -207,9 +224,15 @@ def gamescreen():
 
    for m in range(1,10):
       screen.blit(numbers_img[m], dragger[m].rect)
-   global timer_value
-   timer_value+=1
-   draw_timer(timer_value//120)
+   
+   #timer
+   if timer_started and not showsucess:
+      global timer_value
+      timer_value+=1
+      draw_timer(timer_value//120)
+
+   elif not timer_started:
+      timer_value=0
 
 
 def levelscreen():
@@ -218,6 +241,26 @@ def levelscreen():
       button.process()
    # for butt in newbutton.level_buttons:
    #    butt.process()
+
+def gameoverscreen():
+   
+   gamover_rect=pygame.Rect(740,80,400,600)
+   pygame.draw.rect(screen,"red",gamover_rect,0,4)
+   pygame.draw.rect(screen,"yellow",gamover_rect,3,4)
+   gameover_text = myfont.render("Game over",True,"blue")
+   screen.blit(gameover_text,(850,200))
+   backtomenu_button.process()
+
+def successscreen():
+   timer_started=False
+   gamover_rect=pygame.Rect(740,80,400,600)
+   pygame.draw.rect(screen,"green",gamover_rect,0,4)
+   pygame.draw.rect(screen,"red",gamover_rect,3,4)
+   sucess_text = myfont.render("Success",True,"blue")
+   screen.blit(sucess_text,(850,200))
+   sucesstime_text = myfont.render("You did it in "+str(success_time//120)+"Seconds",True,"blue")
+   screen.blit(sucesstime_text,(800,350))
+   backtomenu_button.process()
 
 
 
@@ -250,6 +293,7 @@ menu_buttons = [
     newbutton.Button(screen, 510, 280, ["red", "blue", "green"], 200, 50, myfunction, "Continue"),
     newbutton.Button(screen, 510, 380, ["red", "blue", "green"], 200, 50, myfunction, "Settings"),
     newbutton.Button(screen, 510, 480, ["red", "blue", "green"], 200, 50, myfunction, "Exit")
+    
 ]
 
 # Buttons for the level screen
@@ -260,8 +304,12 @@ level_buttons = [
     newbutton.Button(screen, 510, 480, ["red", "blue", "green"], 200, 50, godmodepress, "God Mode")
 ]
 
+backtomenu_button=newbutton.Button(screen, 840, 380, ["red", "blue", "green"], 200, 50, backtomenupressed, "Back to Menu")
+menu_button=newbutton.Button(screen, 1100, 0, ["red", "blue", "green"], 100, 50, backtomenupressed, "Menu")
 
 
+
+success_time=0
 
 null=(0,0)
 boxprint=0
@@ -269,7 +317,7 @@ green=False
 red = False
 
 while run==True:
-
+   
    if logics["showhome"]==True:
       homescreen()
    elif logics["showmenu"]==True:
@@ -278,6 +326,17 @@ while run==True:
       levelscreen()
    elif logics["showgame"]==True:  
       gamescreen()
+      if showgameover:
+         gameoverscreen()
+      elif showsucess:
+         successscreen()
+      
+      else:
+         
+         tries_text = myfont.render("Tries left: "+ str(current_tries),True,"blue")
+         screen.blit(tries_text,(750,200))
+      if showsucess==False:
+         timer_started=True
 
       newbox_printer()
               
@@ -308,8 +367,24 @@ while run==True:
                               empty_rect.remove(newrect)
                               filled_rect.append((boxprint,newrect))
                               finalgrid[(x//78)][(y//78)]=i
+
+                              if not empty_rect and not showsucess:
+                                 success_time = timer_value
+                                 showsucess = True
+
+                              if not empty_rect:
+                                 
+                                 showsucess=True
+                                 # timer_started=False
+                              
                            else:
                               red = True
+                              current_tries-=1
+                              if current_tries<=0:
+                                 showgameover=True
+                                 
+                           
+                           
                               
 
                         
@@ -319,7 +394,9 @@ while run==True:
                   if dragger[i].dragging:
                      dragger[i].rect.move_ip(event.rel)
             
-           
+               if showgameover:
+                  
+                  break
             pygame.display.update()
       
 

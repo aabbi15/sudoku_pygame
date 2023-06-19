@@ -54,11 +54,11 @@ def generatepuzzle(difficulty):
 
     solver(grid)
     if difficulty=="easy":
-        remove=random.randint(41,46)
+        remove=random.randint(1,6)
     if difficulty=="medium":
         remove=random.randint(51,56)
     if difficulty=="hard":
-        remove=random.randint(61,66)
+        remove=random.randint(1,2)
     
     
     while remove:
