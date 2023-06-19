@@ -5,7 +5,8 @@ pygame.init()
 
 xfont = pygame.font.SysFont("Arial", 40)
 
-all_buttons=[]
+# menu_buttons=[]
+# level_buttons=[]
 
 
 class Button:
@@ -26,8 +27,7 @@ class Button:
         self.rect= pygame.Rect(self.x,self.y,self.width,self.height)
 
         self.alreadypressed=False
-
-        all_buttons.append(self)
+        
         
     def process(self):
         center =[self.rect.width/2-self.textsurface.get_rect().width/2,self.rect.height/2-self.textsurface.get_rect().height/2]

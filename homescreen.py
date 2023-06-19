@@ -1,4 +1,5 @@
 import pygame
+from pygame.locals import *
 
 import newbutton
 import sys
@@ -25,9 +26,13 @@ screen.fill("cyan")
 
 #logics
 run=True
-logics={"showhome":True,"showmenu":False,"showgame":False,"xyz":True}
-difficulty="easy"
-visible=False
+logics={"showhome":True,"showmenu":False,"showgame":False,"showlevel":False}
+difficulty="hard"
+
+
+clock = pygame.time.Clock()
+timer_value=0
+timer_started=False
 
 
 #sudokumaker
@@ -109,9 +114,10 @@ def myfunction():
    print("HELLO")
 
 def newgamepressed():
-   for key in logics:
-      logics[key]=False
-   logics["showgame"]=True
+   logics["showgame"]=False
+   logics["showmenu"]=False
+   logics["showlevel"]=True
+   pygame.time.delay(100)
 
 def newbox_printer():
    
@@ -119,7 +125,30 @@ def newbox_printer():
       screen.blit(redbox_img,(x,y))
    for a,b in filled_rect:
       screen.blit(numbers_img[a],b)
+
+def draw_timer(time):
+   timer_text = myfont.render("TIME: " + str(time),True,"white")
+   screen.blit(timer_text,(800,20))
+
+def easypress():
+   difficulty="easy"
+   logics["showlevel"]=False
+   logics["showgame"]=True
    
+def mediumpress():
+   difficulty="medium"
+   logics["showlevel"]=False
+   logics["showgame"]=True
+   
+def hardpress():
+   difficulty="hard"
+   logics["showlevel"]=False
+   logics["showgame"]=True
+   
+def godmodepress():
+   logics["showgame"]=True
+   logics["showlevel"]=False
+   difficulty="hard"
 
 
 #def correctornot(num):
@@ -136,9 +165,10 @@ def newbox_printer():
 
 def menuscreen():
    screen.fill("pink")
-   title("SUDOKU",titlefont,"red",500,10)
-   for object in newbutton.all_buttons:
-        object.process()
+   title("SUDOKU", titlefont, "red", 500, 10)
+
+   for button in menu_buttons:
+      button.process()
 
 def homescreen():
    screen.fill("black")
@@ -177,6 +207,22 @@ def gamescreen():
 
    for m in range(1,10):
       screen.blit(numbers_img[m], dragger[m].rect)
+   global timer_value
+   timer_value+=1
+   draw_timer(timer_value//120)
+
+
+def levelscreen():
+   screen.fill("cyan")
+   for button in level_buttons:
+      button.process()
+   # for butt in newbutton.level_buttons:
+   #    butt.process()
+
+
+
+
+
 
 
    
@@ -199,10 +245,22 @@ def gamescreen():
 
 
 #buttons
-newgame_butt= newbutton.Button(screen,510,180,["red","blue","green"],200 ,50,newgamepressed,"New Game")
-continuegame_butt= newbutton.Button(screen,510,280,["red","blue","green"],200 ,50,myfunction,"Continue")
-settings_butt= newbutton.Button(screen,510,380,["red","blue","green"],200 ,50,myfunction,"Settings")
-exit_butt= newbutton.Button(screen,510,480,["red","blue","green"],200 ,50,myfunction,"Exit")
+menu_buttons = [
+    newbutton.Button(screen, 510, 180, ["red", "blue", "green"], 200, 50, newgamepressed, "New Game"),
+    newbutton.Button(screen, 510, 280, ["red", "blue", "green"], 200, 50, myfunction, "Continue"),
+    newbutton.Button(screen, 510, 380, ["red", "blue", "green"], 200, 50, myfunction, "Settings"),
+    newbutton.Button(screen, 510, 480, ["red", "blue", "green"], 200, 50, myfunction, "Exit")
+]
+
+# Buttons for the level screen
+level_buttons = [
+    newbutton.Button(screen, 510, 180, ["red", "blue", "green"], 200, 50, easypress, "Easy"),
+    newbutton.Button(screen, 510, 280, ["red", "blue", "green"], 200, 50, mediumpress, "Medium"),
+    newbutton.Button(screen, 510, 380, ["red", "blue", "green"], 200, 50, hardpress, "Hard"),
+    newbutton.Button(screen, 510, 480, ["red", "blue", "green"], 200, 50, godmodepress, "God Mode")
+]
+
+
 
 
 null=(0,0)
@@ -214,9 +272,11 @@ while run==True:
 
    if logics["showhome"]==True:
       homescreen()
-   if logics["showmenu"]==True:
+   elif logics["showmenu"]==True:
       menuscreen()
-   if logics["showgame"]==True:  
+   elif logics["showlevel"]==True:
+      levelscreen()
+   elif logics["showgame"]==True:  
       gamescreen()
 
       newbox_printer()
@@ -280,6 +340,8 @@ while run==True:
    
    
    pygame.display.update()
+   clock.tick(120)
+   
 pygame.quit()
 
 
