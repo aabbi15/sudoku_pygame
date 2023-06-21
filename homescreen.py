@@ -31,14 +31,11 @@ logics={"showhome":True,"showmenu":False,"showgame":False,"showlevel":False}
 showgameover = False
 showsucess=False
 difficulty="hard"
-
-global current_tries 
 current_tries=3
 
 
 clock = pygame.time.Clock()
 timer_value=0
-global timer_started
 timer_started=False
 
 
