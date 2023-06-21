@@ -126,12 +126,12 @@ def home_screen():
 
 
 #game running
-while (run==True):
+while (run is True):
 
     screen.fill("white")
     if homescreen:
         home_screen()
-    if menuscreen==True:    
+    if menuscreen is True:    
         display_menu()
     if gamescreen:
          game_screen()

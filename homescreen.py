@@ -316,15 +316,15 @@ boxprint=0
 green=False
 red = False
 
-while run==True:
+while run is True:
    
-   if logics["showhome"]==True:
+   if logics["showhome"] is True:
       homescreen()
-   elif logics["showmenu"]==True:
+   elif logics["showmenu"] is True:
       menuscreen()
-   elif logics["showlevel"]==True:
+   elif logics["showlevel"] is True:
       levelscreen()
-   elif logics["showgame"]==True:  
+   elif logics["showgame"] is True:  
       gamescreen()
       if showgameover:
          gameoverscreen()
@@ -335,7 +335,7 @@ while run==True:
          
          tries_text = myfont.render("Tries left: "+ str(current_tries),True,"blue")
          screen.blit(tries_text,(750,200))
-      if showsucess==False:
+      if showsucess is False:
          timer_started=True
 
       newbox_printer()
