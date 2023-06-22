@@ -58,7 +58,7 @@ def generatepuzzle(difficulty):
     if difficulty=="medium":
         remove=random.randint(51,56)
     if difficulty=="hard":
-        remove=random.randint(1,2)
+        remove=random.randint(61,71)
     
     
     while remove:

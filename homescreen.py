@@ -226,7 +226,8 @@ def gamescreen():
       screen.blit(numbers_img[m], dragger[m].rect)
    
    #timer
-   if timer_started and not showsucess:
+   global timer_started
+   if timer_started :
       global timer_value
       timer_value+=1
       draw_timer(timer_value//120)
@@ -242,24 +243,33 @@ def levelscreen():
    # for butt in newbutton.level_buttons:
    #    butt.process()
 
-def gameoverscreen():
+def gameoverscreen(stored_time):
    
-   gamover_rect=pygame.Rect(740,80,400,600)
+   global timer_started
+   
+   timer_started=False
+   gamover_rect=pygame.Rect(700,78,500,722)
    pygame.draw.rect(screen,"red",gamover_rect,0,4)
    pygame.draw.rect(screen,"yellow",gamover_rect,3,4)
    gameover_text = myfont.render("Game over",True,"blue")
-   screen.blit(gameover_text,(850,200))
+   screen.blit(gameover_text,(815,200))
+   failtime1_text = myfont.render("You just wasted " ,True,"blue")
+   screen.blit(failtime1_text,(815,500))
+   failtime2_text = myfont.render(str(stored_time//120)+"Seconds of your life",True,"blue")
+   screen.blit(failtime2_text,(800,550))
    backtomenu_button.process()
 
-def successscreen():
+def successscreen(stored_time):
+   
+   global timer_started
    timer_started=False
-   gamover_rect=pygame.Rect(740,80,400,600)
-   pygame.draw.rect(screen,"green",gamover_rect,0,4)
-   pygame.draw.rect(screen,"red",gamover_rect,3,4)
+   gameover_rect=pygame.Rect(700,78,500,722)
+   pygame.draw.rect(screen,"green",gameover_rect,0,4)
+   pygame.draw.rect(screen,"red",gameover_rect,3,4)
    sucess_text = myfont.render("Success",True,"blue")
-   screen.blit(sucess_text,(850,200))
-   sucesstime_text = myfont.render("You did it in "+str(success_time//120)+"Seconds",True,"blue")
-   screen.blit(sucesstime_text,(800,350))
+   screen.blit(sucess_text,(850,450))
+   sucesstime_text = myfont.render("You did it in "+str(stored_time//120)+" Seconds",True,"blue")
+   screen.blit(sucesstime_text,(790,500))
    backtomenu_button.process()
 
 
@@ -325,9 +335,11 @@ while run==True:
    elif logics["showlevel"]==True:
       levelscreen()
    elif logics["showgame"]==True:  
+      
       gamescreen()
       if showgameover:
-         gameoverscreen()
+         
+         gameoverscreen(stored_time)
       elif showsucess:
          successscreen()
       
@@ -335,8 +347,9 @@ while run==True:
          
          tries_text = myfont.render("Tries left: "+ str(current_tries),True,"blue")
          screen.blit(tries_text,(750,200))
-      if showsucess==False:
          timer_started=True
+         stored_time=timer_value
+
 
       newbox_printer()
               
