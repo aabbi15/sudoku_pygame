@@ -7,6 +7,7 @@ import random
 import sudokumaker
 import dragndrop
 import gamelogic
+import asyncio
 
 pygame.init()
 
@@ -30,7 +31,8 @@ run=True
 logics={"showhome":True,"showmenu":False,"showgame":False,"showlevel":False}
 showgameover = False
 showsucess=False
-difficulty="hard"
+first=True
+
 
 global current_tries 
 current_tries=3
@@ -43,21 +45,25 @@ timer_started=False
 
 
 #sudokumaker
+def create_sudoku(difficulty):
+   global finalgrid
+   finalgrid=sudokumaker.generatepuzzle(difficulty)
 
-finalgrid=sudokumaker.generatepuzzle(difficulty)
+   global empty_rect
+   global filled_rect
+   global empty_coordinates
+   empty_coordinates = []
+   empty_rect =[]
+   filled_rect=[]
 
-empty_coordinates = []
-empty_rect =[]
-filled_rect=[]
-
-for i in range(9):
-   for j in range(9):
-      if finalgrid[i][j]==0:
-         empty_coordinates.append(((78*i),(j*78)))
-wow=0
-for x,y in empty_coordinates:
-   empty_rect.append(pygame.Rect(x,y,78,78))
-   wow+=1
+   for i in range(9):
+      for j in range(9):
+         if finalgrid[i][j]==0:
+            empty_coordinates.append(((78*i),(j*78)))
+   wow=0
+   for x,y in empty_coordinates:
+      empty_rect.append(pygame.Rect(x,y,78,78))
+      wow+=1
 
 
 
@@ -111,7 +117,6 @@ for i in range(1,10):
 
 
 
-
 #fxns
 def title(text,font,col,x,y):
    img = font.render(text,True,col)
@@ -125,6 +130,12 @@ def newgamepressed():
    logics["showmenu"]=False
    logics["showlevel"]=True
    pygame.time.delay(500)
+
+def continuepressed():
+   logics["showgame"]=True
+   logics["showmenu"]=False
+   
+
 
 def newbox_printer():
    
@@ -140,18 +151,21 @@ def draw_timer(time):
 def easypress():
    global difficulty
    difficulty="easy"
+   create_sudoku(difficulty)
    logics["showlevel"]=False
    logics["showgame"]=True
    
 def mediumpress():
    global difficulty
    difficulty="medium"
+   create_sudoku(difficulty)
    logics["showlevel"]=False
    logics["showgame"]=True
    
 def hardpress():
    global difficulty
    difficulty="hard"
+   create_sudoku(difficulty)
    logics["showlevel"]=False
    logics["showgame"]=True
    
@@ -159,13 +173,17 @@ def godmodepress():
    logics["showgame"]=True
    logics["showlevel"]=False
    difficulty="hard"
+   finalgrid=sudokumaker.generatepuzzle(difficulty)
+   logics["showlevel"]=False
+   logics["showgame"]=True
 
 def backtomenupressed():
    for l in logics:
       logics[l]=False
    logics["showmenu"]=True
 
-#def correctornot(num):
+
+
 
 
 
@@ -178,11 +196,20 @@ def backtomenupressed():
 #screen
 
 def menuscreen():
+   global first
+   
    screen.fill("pink")
-   title("SUDOKU", titlefont, "red", 500, 10)
+   title("Sudoku" , titlefont, "red", 500, 10)
 
    for button in menu_buttons:
-      button.process()
+      if first==True:
+         # first=False
+         if button != menu_buttons[1]:
+            button.process() 
+            
+      else:
+         button.process()
+   
 
 def homescreen():
    screen.fill("black")
@@ -237,11 +264,12 @@ def gamescreen():
 
 
 def levelscreen():
+   
+   
    screen.fill("cyan")
    for button in level_buttons:
-      button.process()
-   # for butt in newbutton.level_buttons:
-   #    butt.process()
+         button.process()
+  
 
 def gameoverscreen(stored_time):
    
@@ -300,7 +328,7 @@ def successscreen(stored_time):
 #buttons
 menu_buttons = [
     newbutton.Button(screen, 510, 180, ["red", "blue", "green"], 200, 50, newgamepressed, "New Game"),
-    newbutton.Button(screen, 510, 280, ["red", "blue", "green"], 200, 50, myfunction, "Continue"),
+    newbutton.Button(screen, 510, 280, ["red", "blue", "green"], 200, 50, continuepressed, "Continue"),
     newbutton.Button(screen, 510, 380, ["red", "blue", "green"], 200, 50, myfunction, "Settings"),
     newbutton.Button(screen, 510, 480, ["red", "blue", "green"], 200, 50, myfunction, "Exit")
     
@@ -332,7 +360,9 @@ while run==True:
       homescreen()
    elif logics["showmenu"]==True:
       menuscreen()
+      
    elif logics["showlevel"]==True:
+      first = False
       levelscreen()
    elif logics["showgame"]==True:  
       
