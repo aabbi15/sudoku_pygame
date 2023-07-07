@@ -15,28 +15,32 @@ pygame.init()
 # each big box is 233x233
 # each small box is 77x77
 
-
-w= 1200
-h=800
-
 #basics
-screen = pygame.display.set_mode((w,h))
-boardscreen = pygame.Surface([700,700])
-boardscreen = boardscreen.convert_alpha()
+
+W= 1200
+H=800
+
+screen = pygame.display.set_mode((W,H))
 pygame.display.set_caption("SUDOKU")
 screen.fill("cyan")
 
+
+#fonts
+
+titlefont= pygame.font.SysFont("Arial",70)
+myfont= pygame.font.SysFont("Times",40)
+
+
 #logics
+
 run=True
 logics={"showhome":True,"showmenu":False,"showgame":False,"showlevel":False}
 showgameover = False
 showsucess=False
 first=True
 
-
-
 current_tries=3
-
+red = False
 
 clock = pygame.time.Clock()
 timer_value=0
@@ -44,8 +48,8 @@ timer_value=0
 timer_started=False
 
 
-
 #sudokumaker
+
 def create_sudoku(difficulty):
    global finalgrid
    
@@ -69,21 +73,6 @@ def create_sudoku(difficulty):
       wow+=1
 
 
-
-
-
-
-  
-
-
-
-
-
-#fonts
-titlefont= pygame.font.SysFont("Arial",70)
-myfont= pygame.font.SysFont("Times",40)
-
-
 #images
 board_img = pygame.image.load("sudokuboard.jpg")
 
@@ -96,28 +85,20 @@ six_img = pygame.image.load("six.png").convert_alpha()
 seven_img = pygame.image.load("seven.png").convert_alpha()
 eight_img = pygame.image.load("eight.png").convert_alpha()
 nine_img = pygame.image.load("nine.png").convert_alpha()
+
 redbox_img = pygame.image.load("redbox.png").convert_alpha()
-# greenbox_img = pygame.image.load("greenbox.png").convert_alpha()
 blank_img = pygame.image.load("blank.png").convert_alpha()
 redbox_img= pygame.transform.scale(redbox_img,(75,75))
-
 
 numbers_img=[blank_img,one_img,two_img,three_img,four_img,five_img,six_img,seven_img,eight_img,nine_img]
 
 bar_img = pygame.image.load("emptybar.jpg")
 
 
-#draggers
+#dragger images
 dragger = [0]*10
 for i in range(1,10):
    dragger[i] = dragndrop.DragnDrop(screen,numbers_img[i],(78*(i-1)),722)
-
-
-
-
-
-
-
 
 
 #fxns
@@ -125,7 +106,6 @@ for i in range(1,10):
 def title(text,font,col,x,y):
    img = font.render(text,True,col)
    screen.blit(img,(x,y))
-
 
 def onlytrue(truescreen):
    global logics
@@ -144,8 +124,6 @@ def reset_game():
 
    global red
    red=False
-
-
 
 def myfunction():
    print("HELLO")
@@ -171,37 +149,44 @@ def draw_timer(time):
    timer_text = myfont.render("TIME: " + str(time),True,"white")
    screen.blit(timer_text,(800,10))
 
-def easypress():
+def levelpress(diff):
    global difficulty
-   difficulty="easy"
+   difficulty=diff
    create_sudoku(difficulty)
-   onlytrue("showgame")
-   
-def mediumpress():
-   global difficulty
-   difficulty="medium"
-   create_sudoku(difficulty)
-   onlytrue("showgame")
-   
-def hardpress():
-   global difficulty
-   difficulty="hard"
-   create_sudoku(difficulty)
-   logics["showlevel"]=False
-   logics["showgame"]=True
-   
-def godmodepress():
-   
-   difficulty="hard"
-   finalgrid=sudokumaker.generatepuzzle(difficulty)
    onlytrue("showgame")
 
 def backtomenupressed():
    onlytrue("showmenu")
+   global showsucess
+   showsucess=False
+   global showgameover
+   showgameover=False
+
+def menupressed():
+   onlytrue("showmenu")
+   
 
 
 
+#buttons
+menu_buttons = [
+    newbutton.Button(screen, 510, 180, ["red", "blue", "green"], 200, 50, newgamepressed, "New Game"),
+    newbutton.Button(screen, 510, 280, ["red", "blue", "green"], 200, 50, continuepressed, "Continue"),
+    newbutton.Button(screen, 510, 380, ["red", "blue", "green"], 200, 50, myfunction, "Settings"),
+    newbutton.Button(screen, 510, 480, ["red", "blue", "green"], 200, 50, myfunction, "Exit")
+    
+]
 
+
+level_buttons = [
+    newbutton.Button(screen, 510, 180, ["red", "blue", "green"], 200, 50,lambda: levelpress("easy"), "Easy"),
+    newbutton.Button(screen, 510, 280, ["red", "blue", "green"], 200, 50, lambda: levelpress("medium"), "Medium"),
+    newbutton.Button(screen, 510, 380, ["red", "blue", "green"], 200, 50, lambda: levelpress("hard"), "Hard"),
+    newbutton.Button(screen, 510, 480, ["red", "blue", "green"], 200, 50, lambda: levelpress("easy"), "God Mode")
+]
+
+backtomenu_button=newbutton.Button(screen, 840, 380, ["red", "blue", "green"], 200, 50, backtomenupressed, "Back to Menu")
+menu_button=newbutton.Button(screen, 1100, 0, ["red", "blue", "green"], 100, 50, menupressed, "Menu")
 
 
 
@@ -220,14 +205,13 @@ def menuscreen():
 
    for button in menu_buttons:
       if first==True:
-         # first=False
+         
          if button != menu_buttons[1]:
             button.process() 
             
       else:
          button.process()
    
-
 def homescreen():
    screen.fill("black")
    title("Welcome",titlefont,"red",500,10)
@@ -239,7 +223,6 @@ def homescreen():
 
    title("PRESS SPACE TO CONTINUE",titlefont,"red",100,700)
    
-
 def gamescreen():
    
    #layout
@@ -280,7 +263,6 @@ def gamescreen():
    elif not timer_started:
       timer_value=0
 
-
 def levelscreen():
    
    
@@ -288,7 +270,6 @@ def levelscreen():
    for button in level_buttons:
          button.process()
   
-
 def gameoverscreen(stored_time):
    
    global timer_started
@@ -304,6 +285,7 @@ def gameoverscreen(stored_time):
    failtime2_text = myfont.render(str(stored_time//120)+"Seconds of your life",True,"blue")
    screen.blit(failtime2_text,(800,550))
    backtomenu_button.process()
+
 
 def successscreen(stored_time):
    
@@ -343,34 +325,16 @@ def successscreen(stored_time):
 
 
 
-#buttons
-menu_buttons = [
-    newbutton.Button(screen, 510, 180, ["red", "blue", "green"], 200, 50, newgamepressed, "New Game"),
-    newbutton.Button(screen, 510, 280, ["red", "blue", "green"], 200, 50, continuepressed, "Continue"),
-    newbutton.Button(screen, 510, 380, ["red", "blue", "green"], 200, 50, myfunction, "Settings"),
-    newbutton.Button(screen, 510, 480, ["red", "blue", "green"], 200, 50, myfunction, "Exit")
-    
-]
-
-# Buttons for the level screen
-level_buttons = [
-    newbutton.Button(screen, 510, 180, ["red", "blue", "green"], 200, 50, easypress, "Easy"),
-    newbutton.Button(screen, 510, 280, ["red", "blue", "green"], 200, 50, mediumpress, "Medium"),
-    newbutton.Button(screen, 510, 380, ["red", "blue", "green"], 200, 50, hardpress, "Hard"),
-    newbutton.Button(screen, 510, 480, ["red", "blue", "green"], 200, 50, godmodepress, "God Mode")
-]
-
-backtomenu_button=newbutton.Button(screen, 840, 380, ["red", "blue", "green"], 200, 50, backtomenupressed, "Back to Menu")
-menu_button=newbutton.Button(screen, 1100, 0, ["red", "blue", "green"], 100, 50, backtomenupressed, "Menu")
 
 
 
-success_time=0
 
-null=(0,0)
-boxprint=0
 
-red = False
+
+
+# boxprint=0
+
+
 
 while run==True:
    
@@ -389,7 +353,7 @@ while run==True:
          
          gameoverscreen(stored_time)
       elif showsucess:
-         successscreen()
+         successscreen(stored_time)
       
       else:
          
@@ -419,24 +383,24 @@ while run==True:
                      dragger[i].return_home()
                      for newrect in empty_rect:
                         if  newrect.collidepoint(mousepos):
-                           boxprint=i
+                           # boxprint=i
                            x= newrect.left
                            y= newrect.top
                            if sudokumaker.isvalid(finalgrid,x//78,y//78,i):
                               
                               red = False
                               empty_rect.remove(newrect)
-                              filled_rect.append((boxprint,newrect))
+                              filled_rect.append((i,newrect))
                               finalgrid[(x//78)][(y//78)]=i
 
                               if not empty_rect and not showsucess:
-                                 success_time = timer_value
+                                 # success_time = timer_value
                                  showsucess = True
 
-                              if not empty_rect:
+                              # if not empty_rect:
                                  
-                                 showsucess=True
-                                 # timer_started=False
+                              #    showsucess=True
+                                 
                               
                            else:
                               red = True
@@ -481,5 +445,4 @@ while run==True:
    clock.tick(120)
    
 pygame.quit()
-
 
