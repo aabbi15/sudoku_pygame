@@ -34,20 +34,23 @@ showsucess=False
 first=True
 
 
-global current_tries 
+
 current_tries=3
 
 
 clock = pygame.time.Clock()
 timer_value=0
-global timer_started
+
 timer_started=False
+
 
 
 #sudokumaker
 def create_sudoku(difficulty):
    global finalgrid
-   finalgrid=sudokumaker.generatepuzzle(difficulty)
+   
+   key=random.randint(0,1000)
+   finalgrid= sudokumaker.generatepuzzle(difficulty,key)
 
    global empty_rect
    global filled_rect
@@ -118,22 +121,42 @@ for i in range(1,10):
 
 
 #fxns
+
 def title(text,font,col,x,y):
    img = font.render(text,True,col)
    screen.blit(img,(x,y))
+
+
+def onlytrue(truescreen):
+   global logics
+   for k in logics:
+      logics[k]=False
+   logics[truescreen]=True
+
+def reset_game():
+   global timer_started
+   global timer_value
+   timer_started=False
+   timer_value=0
+
+   global current_tries
+   current_tries=3
+
+   global red
+   red=False
+
+
 
 def myfunction():
    print("HELLO")
 
 def newgamepressed():
-   logics["showgame"]=False
-   logics["showmenu"]=False
-   logics["showlevel"]=True
+   reset_game()
+   onlytrue("showlevel")
    pygame.time.delay(500)
 
 def continuepressed():
-   logics["showgame"]=True
-   logics["showmenu"]=False
+   onlytrue("showgame")
    
 
 
@@ -152,15 +175,13 @@ def easypress():
    global difficulty
    difficulty="easy"
    create_sudoku(difficulty)
-   logics["showlevel"]=False
-   logics["showgame"]=True
+   onlytrue("showgame")
    
 def mediumpress():
    global difficulty
    difficulty="medium"
    create_sudoku(difficulty)
-   logics["showlevel"]=False
-   logics["showgame"]=True
+   onlytrue("showgame")
    
 def hardpress():
    global difficulty
@@ -170,17 +191,13 @@ def hardpress():
    logics["showgame"]=True
    
 def godmodepress():
-   logics["showgame"]=True
-   logics["showlevel"]=False
+   
    difficulty="hard"
    finalgrid=sudokumaker.generatepuzzle(difficulty)
-   logics["showlevel"]=False
-   logics["showgame"]=True
+   onlytrue("showgame")
 
 def backtomenupressed():
-   for l in logics:
-      logics[l]=False
-   logics["showmenu"]=True
+   onlytrue("showmenu")
 
 
 
@@ -226,6 +243,7 @@ def homescreen():
 def gamescreen():
    
    #layout
+   
    screen.fill("black")
    screen.blit(board_img,(0,0))
    screen.blit(bar_img,(0,722))
@@ -351,7 +369,7 @@ success_time=0
 
 null=(0,0)
 boxprint=0
-green=False
+
 red = False
 
 while run==True:

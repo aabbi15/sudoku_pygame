@@ -50,21 +50,21 @@ def solver(grid):
 
 
 
-def generatepuzzle(difficulty):
+def generatepuzzle(difficulty,key):
 
     solver(grid)
     if difficulty=="easy":
-        remove=random.randint(1,6)
+        remove=1+(random.randint(1,6)+(key*456))%6
     if difficulty=="medium":
-        remove=random.randint(51,56)
+        remove=30+(random.randint(20 ,30)+(key*456))%10
     if difficulty=="hard":
-        remove=random.randint(61,71)
+        remove=61+(random.randint(1,6)+(key*456))%10
     
     
     while remove:
         
-        row=random.randint(0,8)
-        col=random.randint(0,8)
+        row=((random.randint(0,8))+(key*123))%9
+        col=((random.randint(0,8))+(key*123))%9
         store=grid[row][col]
         grid[row][col]=0
         if single_ans_checker(grid):
@@ -92,13 +92,6 @@ def single_ans_checker(grid):
 
 
 
-# generatepuzzle("easy")
-
-
-# for i in range(9):
-#     for j in range(9):
-#         print(grid[i][j],end="")
-#     print("\n")  
 
                                 
 
