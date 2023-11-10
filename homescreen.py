@@ -15,32 +15,27 @@ pygame.init()
 # each big box is 233x233
 # each small box is 77x77
 
+
+w= 1200
+h=800
+
 #basics
-
-W= 1200
-H=800
-
-screen = pygame.display.set_mode((W,H))
+screen = pygame.display.set_mode((w,h))
+boardscreen = pygame.Surface([700,700])
+boardscreen = boardscreen.convert_alpha()
 pygame.display.set_caption("SUDOKU")
 screen.fill("cyan")
 
-
-#fonts
-
-titlefont= pygame.font.SysFont("Arial",70)
-myfont= pygame.font.SysFont("Times",40)
-
-
 #logics
-
 run=True
-logics={"showhome":True,"showmenu":False,"showgame":False,"showlevel":False}
-showgameover = False
-showsucess=False
+logics={"showhome":True,"showmenu":False,"showgame":False,"showlevel":False,"showgameover":False,"showsucess":False}
+
 first=True
 
+
+
 current_tries=3
-red = False
+
 
 clock = pygame.time.Clock()
 timer_value=0
@@ -48,8 +43,8 @@ timer_value=0
 timer_started=False
 
 
-#sudokumaker
 
+#sudokumaker
 def create_sudoku(difficulty):
    global finalgrid
    
@@ -73,6 +68,39 @@ def create_sudoku(difficulty):
       wow+=1
 
 
+
+
+
+
+  
+
+
+
+
+
+#fonts
+titlefont= pygame.font.SysFont("Quicksand",100)
+myfont= pygame.font.SysFont("Times",40)
+difficultyfont = pygame.font.SysFont("Times",20)
+menufont= pygame.font.SysFont("Times",40)
+authorfont= pygame.font.SysFont("Quicksand",32)
+
+def draw_bordered_text(text, font, text_color, border_color, x, y, border_size):
+    # Render the main text
+    text_surface = font.render(text, True, text_color)
+    
+    # Draw the text with a border
+    for i in range(-border_size, border_size + 1):
+        for j in range(-border_size, border_size + 1):
+            if i != 0 or j != 0:
+                screen.blit(font.render(text, True, border_color), (x + i, y + j))
+    
+    # Blit the main text on top
+    screen.blit(text_surface, (x, y))
+
+
+
+
 #images
 board_img = pygame.image.load("sudokuboard.jpg")
 
@@ -85,20 +113,36 @@ six_img = pygame.image.load("six.png").convert_alpha()
 seven_img = pygame.image.load("seven.png").convert_alpha()
 eight_img = pygame.image.load("eight.png").convert_alpha()
 nine_img = pygame.image.load("nine.png").convert_alpha()
-
 redbox_img = pygame.image.load("redbox.png").convert_alpha()
 blank_img = pygame.image.load("blank.png").convert_alpha()
 redbox_img= pygame.transform.scale(redbox_img,(75,75))
+
 
 numbers_img=[blank_img,one_img,two_img,three_img,four_img,five_img,six_img,seven_img,eight_img,nine_img]
 
 bar_img = pygame.image.load("emptybar.jpg")
 
+mybg_img = pygame.image.load("mybg.png").convert_alpha()
 
-#dragger images
+
+
+
+
+
+
+
+
+#draggers
 dragger = [0]*10
 for i in range(1,10):
    dragger[i] = dragndrop.DragnDrop(screen,numbers_img[i],(78*(i-1)),722)
+
+
+
+
+
+
+
 
 
 #fxns
@@ -106,6 +150,7 @@ for i in range(1,10):
 def title(text,font,col,x,y):
    img = font.render(text,True,col)
    screen.blit(img,(x,y))
+
 
 def onlytrue(truescreen):
    global logics
@@ -124,6 +169,8 @@ def reset_game():
 
    global red
    red=False
+
+
 
 def myfunction():
    print("HELLO")
@@ -147,46 +194,41 @@ def newbox_printer():
 
 def draw_timer(time):
    timer_text = myfont.render("TIME: " + str(time),True,"white")
-   screen.blit(timer_text,(800,10))
+   screen.blit(timer_text,(720,10))
 
-def levelpress(diff):
+def easypress():
    global difficulty
-   difficulty=diff
+   difficulty="easy"
+   create_sudoku(difficulty)
+   onlytrue("showgame")
+   
+def mediumpress():
+   global difficulty
+   difficulty="medium"
+   create_sudoku(difficulty)
+   onlytrue("showgame")
+   
+def hardpress():
+   global difficulty
+   difficulty="hard"
+   create_sudoku(difficulty)
+   onlytrue("showgame")
+
+def godmodepress():
+   global difficulty
+   difficulty="god"
    create_sudoku(difficulty)
    onlytrue("showgame")
 
 def backtomenupressed():
-   onlytrue("showmenu")
-   global showsucess
-   showsucess=False
-   global showgameover
-   showgameover=False
-
-def menupressed():
-   onlytrue("showmenu")
+   reset_game()
    
+   pygame.time.delay(500)
+   onlytrue("showmenu")
 
 
 
-#buttons
-menu_buttons = [
-    newbutton.Button(screen, 510, 180, ["red", "blue", "green"], 200, 50, newgamepressed, "New Game"),
-    newbutton.Button(screen, 510, 280, ["red", "blue", "green"], 200, 50, continuepressed, "Continue"),
-    newbutton.Button(screen, 510, 380, ["red", "blue", "green"], 200, 50, myfunction, "Settings"),
-    newbutton.Button(screen, 510, 480, ["red", "blue", "green"], 200, 50, myfunction, "Exit")
-    
-]
 
-
-level_buttons = [
-    newbutton.Button(screen, 510, 180, ["red", "blue", "green"], 200, 50,lambda: levelpress("easy"), "Easy"),
-    newbutton.Button(screen, 510, 280, ["red", "blue", "green"], 200, 50, lambda: levelpress("medium"), "Medium"),
-    newbutton.Button(screen, 510, 380, ["red", "blue", "green"], 200, 50, lambda: levelpress("hard"), "Hard"),
-    newbutton.Button(screen, 510, 480, ["red", "blue", "green"], 200, 50, lambda: levelpress("easy"), "God Mode")
-]
-
-backtomenu_button=newbutton.Button(screen, 840, 380, ["red", "blue", "green"], 200, 50, backtomenupressed, "Back to Menu")
-menu_button=newbutton.Button(screen, 1100, 0, ["red", "blue", "green"], 100, 50, menupressed, "Menu")
 
 
 
@@ -200,37 +242,59 @@ menu_button=newbutton.Button(screen, 1100, 0, ["red", "blue", "green"], 100, 50,
 def menuscreen():
    global first
    
-   screen.fill("pink")
-   title("Sudoku" , titlefont, "red", 500, 10)
+   screen.fill("lavender")
+   screen.blit(mybg_img,(0,0))
 
+   draw_bordered_text("Menu Screen" , titlefont, (148, 0, 211),(200, 200, 200), 420, 40, 2)
+
+   
    for button in menu_buttons:
       if first==True:
          
+         
          if button != menu_buttons[1]:
             button.process() 
+         # else:
+         #    continue2_button.process()
             
       else:
          button.process()
    
+
+
+
+
 def homescreen():
-   screen.fill("black")
-   title("Welcome",titlefont,"red",500,10)
-   title("To",titlefont,"red",500,110)
-   title("Sudoku",titlefont,"red",500,210)
-   title("Game",titlefont,"red",500,310)
+   screen.fill("teal")
+   screen.blit(mybg_img,(0,0))
 
-   title("Made by Abhishek",myfont,"red",500,410)
-
-   title("PRESS SPACE TO CONTINUE",titlefont,"red",100,700)
    
+   draw_bordered_text("Welcome", titlefont, (200, 200, 200), (148, 0, 211), 470, 40, 2)
+   draw_bordered_text("To", titlefont, (200, 200, 200), (148, 0, 211), 560, 140, 2)
+   draw_bordered_text("Sudoku", titlefont, (200, 200, 200), (148, 0, 211), 380, 240, 2)
+   draw_bordered_text("Game", titlefont, (200, 200, 200), (148, 0, 211), 660, 240, 2)
+
+   title("Made by Abhishek Abbi",authorfont,(200, 200, 200),480,410)
+   title("Github:aabbi15",authorfont,(200, 200, 200),525,440)
+
+
+   title("PRESS SPACE TO CONTINUE",myfont,"black",340,620)
+
+   
+   
+
+   
+
+   
+
 def gamescreen():
    
    #layout
    
-   screen.fill("black")
+   screen.fill("teal")
    screen.blit(board_img,(0,0))
    screen.blit(bar_img,(0,722))
-   title(difficulty,myfont,"white",700,0)
+   title(difficulty,difficultyfont,"white",1120,770)
    menu_button.process()
    
   
@@ -263,41 +327,46 @@ def gamescreen():
    elif not timer_started:
       timer_value=0
 
+
 def levelscreen():
    
    
-   screen.fill("cyan")
+   screen.fill("lavender")
+   screen.blit(mybg_img,(0,0))
+
+   draw_bordered_text("Level Screen" , titlefont, (148, 0, 211),(200, 200, 200), 420, 40, 2)
+
    for button in level_buttons:
          button.process()
   
+
 def gameoverscreen(stored_time):
    
    global timer_started
    
    timer_started=False
    gamover_rect=pygame.Rect(700,78,500,722)
-   pygame.draw.rect(screen,"red",gamover_rect,0,4)
+   pygame.draw.rect(screen,(203, 50, 50),gamover_rect,0,4)
    pygame.draw.rect(screen,"yellow",gamover_rect,3,4)
-   gameover_text = myfont.render("Game over",True,"blue")
-   screen.blit(gameover_text,(815,200))
-   failtime1_text = myfont.render("You just wasted " ,True,"blue")
-   screen.blit(failtime1_text,(815,500))
-   failtime2_text = myfont.render(str(stored_time//120)+"Seconds of your life",True,"blue")
-   screen.blit(failtime2_text,(800,550))
+   gameover_text = titlefont.render("Game over",True,"yellow")
+   screen.blit(gameover_text,(770,200))
+   failtime1_text = myfont.render("You just wasted " ,True,"white")
+   screen.blit(failtime1_text,(800,360))
+   failtime2_text = myfont.render(str(stored_time//120)+" seconds of your life",True,"white")
+   screen.blit(failtime2_text,(770,405))
    backtomenu_button.process()
-
 
 def successscreen(stored_time):
    
    global timer_started
    timer_started=False
    gameover_rect=pygame.Rect(700,78,500,722)
-   pygame.draw.rect(screen,"green",gameover_rect,0,4)
+   pygame.draw.rect(screen,(0,80,80),gameover_rect,0,4)
    pygame.draw.rect(screen,"red",gameover_rect,3,4)
-   sucess_text = myfont.render("Success",True,"blue")
-   screen.blit(sucess_text,(850,450))
-   sucesstime_text = myfont.render("You did it in "+str(stored_time//120)+" Seconds",True,"blue")
-   screen.blit(sucesstime_text,(790,500))
+   sucess_text = titlefont.render("Success",True,"green")
+   screen.blit(sucess_text,(820,250))
+   sucesstime_text = myfont.render("You did it in "+str(stored_time//120)+" Seconds",True,"white")
+   screen.blit(sucesstime_text,(770,380))
    backtomenu_button.process()
 
 
@@ -325,16 +394,36 @@ def successscreen(stored_time):
 
 
 
+#buttons
+menu_buttons = [
+    newbutton.Button(screen, 510, 180, [(220, 20, 220)  , "blue", "green"], 200, 50, newgamepressed, "New Game"),
+    newbutton.Button(screen, 510, 280, [(220, 20, 220)  , "blue", "green"], 200, 50, continuepressed, "Continue"),
+    newbutton.Button(screen, 510, 380, [(220, 20, 220)  , "blue", "green"], 200, 50, myfunction, "Settings"),
+    newbutton.Button(screen, 510, 480, [(220, 20, 220)  , "blue", "green"], 200, 50, myfunction, "Exit")
+    
+]
+
+# Buttons for the level screen
+level_buttons = [
+    newbutton.Button(screen, 510, 280, [(220, 20, 220)  , "blue", "green"], 200, 50, mediumpress, "Medium"),
+    newbutton.Button(screen, 510, 180, [(220, 20, 220)  , "blue", "green"], 200, 50, easypress, "Easy"),
+    newbutton.Button(screen, 510, 380, [(220, 20, 220)  , "blue", "green"], 200, 50, hardpress, "Hard"),
+    newbutton.Button(screen, 510, 480, [(220, 20, 220)  , "blue", "green"], 200, 50, godmodepress, "God Mode")
+]
+
+backtomenu_button=newbutton.Button(screen, 840, 500, [(125, 205, 205), "blue", "green"], 200, 50, backtomenupressed, "Back to Menu")
+menu_button=newbutton.ColorButton(screen, 1100, 0, ["silver", "gray", "white"], 100, 50, backtomenupressed, "Menu","black")
+# continue2_button = newbutton.Button(screen, 510, 280, ["gray", "gray", "gray"], 200, 50, myfunction, "Continue")
 
 
 
 
+success_time=0
 
+null=(0,0)
+boxprint=0
 
-
-# boxprint=0
-
-
+red = False
 
 while run==True:
    
@@ -349,16 +438,16 @@ while run==True:
    elif logics["showgame"]==True:  
       
       gamescreen()
-      if showgameover:
+      if logics["showgameover"]:
          
          gameoverscreen(stored_time)
-      elif showsucess:
+      elif logics["showsucess"]:
          successscreen(stored_time)
       
       else:
          
-         tries_text = myfont.render("Tries left: "+ str(current_tries),True,"blue")
-         screen.blit(tries_text,(750,200))
+         tries_text = myfont.render("Tries left: "+ str(current_tries),True,"white")
+         screen.blit(tries_text,(720,70))
          timer_started=True
          stored_time=timer_value
 
@@ -383,30 +472,30 @@ while run==True:
                      dragger[i].return_home()
                      for newrect in empty_rect:
                         if  newrect.collidepoint(mousepos):
-                           # boxprint=i
+                           boxprint=i
                            x= newrect.left
                            y= newrect.top
                            if sudokumaker.isvalid(finalgrid,x//78,y//78,i):
                               
                               red = False
                               empty_rect.remove(newrect)
-                              filled_rect.append((i,newrect))
+                              filled_rect.append((boxprint,newrect))
                               finalgrid[(x//78)][(y//78)]=i
 
-                              if not empty_rect and not showsucess:
-                                 # success_time = timer_value
-                                 showsucess = True
+                              if not empty_rect and not logics["showsucess"]:
+                                 success_time = timer_value
+                                 logics["showsucess"] = True
 
-                              # if not empty_rect:
+                              if not empty_rect:
                                  
-                              #    showsucess=True
-                                 
+                                 logics["showsucess"]=True
+                                 # timer_started=False
                               
                            else:
                               red = True
                               current_tries-=1
                               if current_tries<=0:
-                                 showgameover=True
+                                 logics["showgameover"]=True
                                  
                            
                            
@@ -419,7 +508,7 @@ while run==True:
                   if dragger[i].dragging:
                      dragger[i].rect.move_ip(event.rel)
             
-               if showgameover:
+               if logics["showgameover"]:
                   
                   break
             pygame.display.update()

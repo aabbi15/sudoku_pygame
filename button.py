@@ -32,25 +32,7 @@ class Button():
         return False
 
 
-    # def isclicked(self,event):
-    #     action = False
-    #     mouse_pos=pygame.mouse.get_pos()
-
-    #     if event.type==pygame.MOUSEBUTTONDOWN:
-    #         if self.rect.collidepoint(mouse_pos)==True:
-    #             if pygame.mouse.get_pressed()[0]==True:
-    #                 self.clicked=True
-                    
-
-    #     return self.clicked
-        
-        # if self.rect.collidepoint(mouse_pos):
-        #     if pygame.mouse.get_pressed()[0]==1 and self.clicked == False:
-        #         self.clicked=True
-        #         action =True 
-            
-        #     if pygame.mouse.get_pressed()[0]==0:
-        #         self.clicked=False
+    
 
             
         

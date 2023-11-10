@@ -58,7 +58,9 @@ def generatepuzzle(difficulty,key):
     if difficulty=="medium":
         remove=30+(random.randint(20 ,30)+(key*456))%10
     if difficulty=="hard":
-        remove=61+(random.randint(1,6)+(key*456))%10
+        remove=55+(random.randint(1,6)+(key*456))%10
+    if difficulty=="god":
+        remove=72+(random.randint(1,6)+(key*456))%10
     
     
     while remove:
