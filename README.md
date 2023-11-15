@@ -91,7 +91,7 @@ This project is licensed under the MIT License - see the `LICENSE` file for deta
 ## Author
 
 - Name: Abhishek Abbi
-- Github: [@octokatherine](https://www.github.com/aabbi15)
+- Github: [@aabbi15](https://www.github.com/aabbi15)
 - Mail: abhishekabbi.work@gmail.com
 - X: [@AbhishekAb70528](https://twitter.com/AbhishekAb70528)
 
